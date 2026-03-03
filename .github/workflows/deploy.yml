@@ -1,0 +1,27 @@
+name: Auto Deploy to VM
+
+on:
+  push:
+    branches:
+      - main   # Trigger hanya kalau push ke main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.VM_PORT }}
+          script: |
+            cd /home/ipul/node-app
+            git pull origin main
+            npm install
+            pm2 restart node-app
