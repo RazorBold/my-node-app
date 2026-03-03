@@ -21,7 +21,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.VM_PORT }}
           script: |
-            cd /home/ipul/node-app
+            cd /home/ipul/mynode-app
             git pull origin main
             npm install
-            pm2 restart node-app
+            pm2 restart my-node-app
