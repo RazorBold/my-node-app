@@ -1,0 +1,9 @@
+version: "3.9"
+
+services:
+  my-node-app:
+    image: my-node-app:latest
+    build: .
+    ports:
+      - "5028:5028"       # Host port 5028 → container port 5028
+    restart: always       # Auto restart kalau container crash

@@ -1,9 +1,9 @@
-name: Auto Deploy to VM
+name: Auto Deploy to VM Zero Downtime
 
 on:
   push:
     branches:
-      - main   # Trigger hanya kalau push ke main
+      - main
 
 jobs:
   deploy:
@@ -21,7 +21,29 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.VM_PORT }}
           script: |
-            cd /home/ipul/mynode-app
+            cd /home/ipul/my-node-app
             git pull origin main
-            npm install
-            pm2 restart my-node-app
+
+            # Build image baru
+            docker build -t my-node-app:latest .
+
+            # Jalankan container baru sementara
+            NEW_CONTAINER=my-node-app-temp
+            docker run -d -p 5001:5028 --name $NEW_CONTAINER my-node-app:latest
+
+            # Cek container baru jalan lancar (opsional)
+            sleep 5
+
+            # Stop & remove container lama
+            OLD_CONTAINER=$(docker ps -q -f name=my-node-app-container)
+            if [ "$OLD_CONTAINER" ]; then
+              docker stop $OLD_CONTAINER
+              docker rm $OLD_CONTAINER
+            fi
+
+            # Rename container baru ke nama lama
+            docker rename $NEW_CONTAINER my-node-app-container
+
+            # Update port mapping (opsional, kalau pake host 5028)
+            docker stop my-node-app-container
+            docker run -d -p 5028:5028 --name my-node-app-container my-node-app:latest
