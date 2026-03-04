@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 
 app.get("/", (req, res) => {
-  res.send("Hello Production 🚀 Syaiful dann syaiful awwwwwww");
+  res.send("Hello Production 🚀 Syaiful dann syaiful aaawwwwwww");
 });
 
 app.listen(5028, () => {
