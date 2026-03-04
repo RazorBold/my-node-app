@@ -5,7 +5,7 @@ services:
     image: portfolio:latest
     build: .
     ports:
-      - "3000:3000"
+      - "5028:5028"
     restart: always
     environment:
       - NODE_ENV=production
