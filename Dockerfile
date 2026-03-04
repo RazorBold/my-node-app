@@ -31,7 +31,7 @@ COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
 
 # Expose port
-EXPOSE 3000
+EXPOSE 5028
 
 # Set NODE_ENV
 ENV NODE_ENV=production
