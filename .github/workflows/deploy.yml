@@ -3,7 +3,7 @@ name: Auto Deploy to VM
 on:
   push:
     branches:
-      - main   # Trigger setiap push ke main
+      - main
 
 jobs:
   deploy:
@@ -27,12 +27,13 @@ jobs:
             # Build Docker image terbaru
             docker build -t my-node-app:latest .
 
-            # Stop & remove container lama jika ada
-            OLD_CONTAINER=$(docker ps -q -f name=my-node-app-container)
-            if [ "$OLD_CONTAINER" ]; then
-              docker stop $OLD_CONTAINER
-              docker rm $OLD_CONTAINER
+            # Cek apakah container sudah ada
+            if [ $(docker ps -a -q -f name=my-node-app-container) ]; then
+              echo "Container sudah ada, cukup restart"
+              docker stop my-node-app-container
+              docker rm my-node-app-container
+              docker run -d -p 5028:3000 --name my-node-app-container my-node-app:latest
+            else
+              echo "Container belum ada, buat baru"
+              docker run -d -p 5028:3000 --name my-node-app-container my-node-app:latest
             fi
-
-            # Jalankan container baru langsung
-            docker run -d -p 5028:5028 --name my-node-app-container my-node-app:latest
