@@ -4,6 +4,9 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  serverRuntimeConfig: {
+    port: 5028,
+  },
 }
 
 module.exports = nextConfig
